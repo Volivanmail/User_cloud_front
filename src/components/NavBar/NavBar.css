@@ -1,0 +1,16 @@
+.box-navbar{
+    display: inline;
+
+}
+
+.btn {
+    width: 200px;
+}
+
+.btn-download {
+    background: rgb(247, 243, 138);
+}
+
+.btn-logout {
+    background: rgb(103, 103, 203);
+}

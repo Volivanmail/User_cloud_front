@@ -1,0 +1,29 @@
+div {
+    display: flex;
+    justify-content: space-around;
+    width: 100vw;
+}
+
+table > caption {
+    font-size: 30pt;
+    font-weight: 600;
+}
+table {
+    margin: 0 auto;
+}
+
+
+button .btn{
+    margin: 10px;
+    width: 200px;
+    height: 40px;
+    border-radius: 5px;
+}
+
+.btn-download {
+    background: rgb(237, 235, 186);
+}
+
+.btn-logout {
+    background: rgb(147, 147, 188);
+}

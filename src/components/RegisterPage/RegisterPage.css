@@ -1,0 +1,40 @@
+.container{
+    margin-top: 5vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    text-align: center;
+    align-items: center;
+    border-radius: 5%;
+    background-color: rgb(178, 222, 239);
+  }
+
+.header{
+text-align: center;
+margin-top: 30px;
+text-shadow: 8px 8px 6px #130404;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    align-items: center;
+}
+
+input {
+    margin: 10px 30px;
+    min-width: 600px;
+    height: 40px;
+    border-radius: 5px;
+    text-align: center;
+}
+
+button {
+    margin: 10px;
+    width: 100px;
+    height: 30px;
+    border-radius: 5px;
+    text-align: center;
+    background: rgb(132, 239, 132);
+}
