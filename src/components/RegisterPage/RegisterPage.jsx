@@ -2,33 +2,84 @@ import React, { useState } from "react";
 import './RegisterPage.css'
 import AppName from  "../AppName";
 
-export default function RegisterPage( {onLogin} ) {
-    const [login, setUserLogin] = useState('');
-    const [user_name, setUserName] = useState('');
-    const [password, setPassword] = useState('');
-    const [email, setEmail] = useState('');
 
-    const handleLogin = (e) => {
+export default function Registration() {
+    const [formData, setFormData] = useState({
+        login: '',
+        username: '',
+        email: '',
+        password: ''
+    });
+  
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData({ ...formData, [name]: value });
+    };
+  
+    const handleSubmit = (e) => {
         e.preventDefault();
-        // здесь логику
-        onLogin( {login, user_name, email, password} );
-    }
-
-    // надо ли вводить id в input? и нужно ли проверять пароль?
+        
+        const formData = new FormData(e.target);
+        const requestData = {
+            method: 'POST',
+            body: formData
+        };
+    
+        fetch('http://127.0.0.1:8000/api/register/', requestData)
+        .then(response => {
+            if (response.ok) {
+            return response.json();
+            }
+            throw new Error('Ошибка запроса');
+        })
+        .then(data => {
+            console.log('Success:', data);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    };
+  
     return (
-        <form className="container" onSubmit={handleLogin}>
-            <AppName />
-            <label>Логин</label>
-            <input type="text" placeholder="Только латинские буквы и цифры, первый символ — буква, длина от 4 до 20 символов"
-                value={login} onChange={(e) => setUserLogin(e.target.value)} />
-            <label>Полное имя</label>
-            <input type="text" placeholder="Имя и фамилия" value={user_name} onChange={(e) => setUserName(e.target.value)} />
-            <label>Электронная почта</label>
-            <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
-            <label>Пароль</label>
-            <input type="password" placeholder="Не менее 6 символов: минимум одна заглавная буква, цифра и один
-                специальный символ" value={password} onChange={(e) => setPassword(e.target.value)} />
-            <button type="button">Регистрация</button>
+        <form className="container" onSubmit={handleSubmit}>
+            <AppName/>
+            <label htmlFor="login">Логин:</label>
+            <input
+                type="text"
+                id="login"
+                name="login"
+                value={formData.login}
+                placeholder="Только латинские буквы и цифры, первый символ — буква, длина от 4 до 20 символов"
+                onChange={handleChange}
+            />
+            <label htmlFor="username">Полное имя:</label>
+            <input
+                type="text"
+                id="username"
+                name="username"
+                value={formData.name}
+                placeholder="Имя и фамилия"
+                onChange={handleChange}
+            />
+            <label htmlFor="email">Электронная почта:</label>
+            <input
+                type="email"
+                id="email"
+                name="email"
+                value={formData.email}
+                placeholder="Email"
+                onChange={handleChange}
+            />
+            <label htmlFor="password">Пароль:</label>
+            <input
+                type="password"
+                id="password"
+                name="password"
+                value={formData.password}
+                placeholder="Не менее 6 символов: минимум одна заглавная буква, цифра и один специальный символ"
+                onChange={handleChange}
+            />
+            <button type="submit">Регистрация</button>
         </form>
     );
-}
+  };

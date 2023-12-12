@@ -18,9 +18,13 @@ text-shadow: 8px 8px 6px #130404;
 form {
     display: flex;
     flex-direction: column;
-    text-align: center;
-    align-items: center;
+    /* text-align: center;
+    align-items: center; */
 }
+
+label {
+    font-weight: bold;
+  }
 
 input {
     margin: 10px 30px;
@@ -34,7 +38,13 @@ button {
     margin: 10px;
     width: 100px;
     height: 30px;
-    border-radius: 5px;
-    text-align: center;
-    background: rgb(132, 239, 132);
-}
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+button:hover {
+    background-color: #0056b3;
+  }

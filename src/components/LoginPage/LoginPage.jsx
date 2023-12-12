@@ -2,24 +2,66 @@ import React, { useState } from "react";
 import './LoginPage.css'
 import AppName from  "../AppName";
 
-export default function LoginPage( {onLogin} ) {
-    const [login, setUserLogin] = useState('');
-    const [password, setPassword] = useState('');
 
-    const handleLogin = (e) => {
+
+
+export default function Login() {
+    const [formData, setFormData] = useState({
+        login: '',
+        password: ''
+    });
+  
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData({ ...formData, [name]: value });
+    };
+  
+    const handleSubmit = (e) => {
         e.preventDefault();
-        // здесь логику
-        onLogin( {login, password} );
-    }
+        
+        const formData = new FormData(e.target);
+        const requestData = {
+        method: 'POST',
+        body: formData
+        };
 
+        fetch('http://127.0.0.1:8000/api/login/', requestData)
+        .then(response => {
+            if (response.ok) {
+            return response.json();
+            }
+            throw new Error('Ошибка запроса');
+        })
+        .then(data => {
+            console.log('Success:', data);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    };
+  
     return (
-        <form className="container" onSubmit={handleLogin}>
-            <AppName />
-            <input type="text" placeholder="Логин" value={login} onChange={(e) => setUserLogin(e.target.value)} />
-            <input type="password" placeholder="Пароль" value={password} onChange={(e) => setPassword(e.target.value)} />
-            <button type="submit">Войти</button>
-            <button type="button">Регистрация</button>
-            <p>Зарегистрируйтесь если у вас еще нет аккаунта!</p>
+        <form className="container" onSubmit={handleSubmit}>
+        <AppName/>
+        <input
+            type="text"
+            id="login"
+            name="login"
+            value={formData.login}
+            placeholder="Логин:"
+            onChange={handleChange}
+        />
+        <input
+            type="password"
+            id="password"
+            name="password"
+            value={formData.password}
+            placeholder="Пароль:"
+            onChange={handleChange}
+        />
+        <button type="submit">Войти</button>
+        <button type="button">Регистрация</button>
+        <h5>Зарегистрируйтесь если у вас еще нет аккаунта!</h5>
         </form>
     );
-}
+};
