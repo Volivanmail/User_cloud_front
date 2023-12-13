@@ -1,9 +1,9 @@
 import React from "react";
-import './ClientHome.css'
+import './UserPage.css'
 import AppName from "../AppName";
 import FileList from "../FileList/FileList";
 
-export default function ClientHome() {
+export default function UserPage() {
     return (
         <section>
             <AppName/>
