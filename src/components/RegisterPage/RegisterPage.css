@@ -1,5 +1,6 @@
 .container{
     margin-top: 5vw;
+    width: 700px;
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
@@ -15,20 +16,18 @@ margin-top: 30px;
 text-shadow: 8px 8px 6px #130404;
 }
 
-form {
+/* form {
     display: flex;
     flex-direction: column;
-    /* text-align: center;
-    align-items: center; */
-}
+} */
 
 label {
     font-weight: bold;
   }
 
-input {
+.input-rp {
     margin: 10px 30px;
-    min-width: 600px;
+    width: 600px;
     height: 40px;
     border-radius: 5px;
     text-align: center;

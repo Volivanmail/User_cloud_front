@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import './LoginPage.css'
 import AppName from  "../AppName";
-
+import axios from "axios";
 
 
 
@@ -10,58 +10,57 @@ export default function Login() {
         login: '',
         password: ''
     });
+    const [error, setError] = useState('')
   
     const handleChange = (e) => {
+        setError('')
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
     };
-  
+    
     const handleSubmit = (e) => {
         e.preventDefault();
-        
-        const formData = new FormData(e.target);
-        const requestData = {
-        method: 'POST',
-        body: formData
-        };
-
-        fetch('http://127.0.0.1:8000/api/login/', requestData)
+        axios.post(`${process.env.REACT_APP_API_URL}login/`, formData)
         .then(response => {
-            if (response.ok) {
-            return response.json();
-            }
-            throw new Error('Ошибка запроса');
-        })
-        .then(data => {
-            console.log('Success:', data);
+            console.log('Успешная регистрация:', response.data);
+            localStorage.setItem('token', response.data.data['token']);
+            console.log(localStorage.getItem('token'));
+            window.location.assign(`${process.env.REACT_APP_BASE_URL}user/`);
         })
         .catch(error => {
-            console.error('Error:', error);
+            setError("Ошибка авторизации!")
+            console.error('Ошибка авторизации:', error.message);
         });
+    };
+
+
+    const handleRegistration = (e) => {
+        window.location.replace(`${process.env.REACT_APP_BASE_URL}register/`);
     };
   
     return (
-        <form className="container" onSubmit={handleSubmit}>
-        <AppName/>
-        <input
-            type="text"
-            id="login"
-            name="login"
-            value={formData.login}
-            placeholder="Логин:"
-            onChange={handleChange}
-        />
-        <input
-            type="password"
-            id="password"
-            name="password"
-            value={formData.password}
-            placeholder="Пароль:"
-            onChange={handleChange}
-        />
-        <button type="submit">Войти</button>
-        <button type="button">Регистрация</button>
-        <h5>Зарегистрируйтесь если у вас еще нет аккаунта!</h5>
+        <form className="container_login" onSubmit={handleSubmit}>
+            <AppName/>
+            <input
+                type="text"
+                id="login"
+                name="login"
+                value={formData.login}
+                placeholder="Логин:"
+                onChange={handleChange}
+            />
+            <input
+                type="password"
+                id="password"
+                name="password"
+                value={formData.password}
+                placeholder="Пароль:"
+                onChange={handleChange}
+            />
+            <button type="submit">Войти</button>
+            <button onClick={handleRegistration}>Регистрация</button>
+            <h5>Зарегистрируйтесь если у вас еще нет аккаунта!</h5>
+            <div style={{color: 'red'}}>{error}</div>
         </form>
     );
 };

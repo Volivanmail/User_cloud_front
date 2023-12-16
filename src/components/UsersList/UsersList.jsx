@@ -5,7 +5,7 @@ export default function UsersList() {
     const [users, setUsers] = useState([]);
 
     useEffect(() => {
-        fetch('http://127.0.0.1:8000/api/get_users/')
+        fetch('http://127.0.0.1:8000/api/admin/get_users/')
             .then(response => {
                 if (response.ok) {
                     return response.json();
@@ -18,10 +18,10 @@ export default function UsersList() {
             .catch((error) => {
                 console.error('Error:', error);
             })
-    }, []);
+    }, [setUsers]);
 
     return (
-    <div className='file_list-container'>
+    <div className='list-user-container'>
         <h2>Список пользователей</h2>
         <table className='table'>
             <thead>
@@ -33,11 +33,11 @@ export default function UsersList() {
             </thead>
             <tbody>
                 {users.map((user)=>{
-                    return <tr key={user.id}>
-                            <td>{user.login}</td>
-                            <td>{user.username}</td>
-                            <td>{user.email}</td>
-                        </tr>
+                    <tr key={user.id}>
+                        <td>{user.login}</td>
+                        <td>{user.username}</td>
+                        <td>{user.email}</td>
+                    </tr>
                 })}
             </tbody>
         </table>

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import './RegisterPage.css'
 import AppName from  "../AppName";
+import axios from "axios";
 
 
 export default function Registration() {
@@ -10,41 +11,39 @@ export default function Registration() {
         email: '',
         password: ''
     });
+
+    const [error, setError] = useState('')
   
     const handleChange = (e) => {
+        setError('')
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
     };
   
     const handleSubmit = (e) => {
         e.preventDefault();
-        
-        const formData = new FormData(e.target);
-        const requestData = {
-            method: 'POST',
-            body: formData
-        };
-    
-        fetch('http://127.0.0.1:8000/api/register/', requestData)
+        axios.post(`${process.env.REACT_APP_API_URL}register/`, formData)
         .then(response => {
-            if (response.ok) {
-            return response.json();
-            }
-            throw new Error('Ошибка запроса');
-        })
-        .then(data => {
-            console.log('Success:', data);
+            console.log(response.data);
+            setError(response.data['message']);
+            window.location.replace(`${process.env.REACT_APP_BASE_URL}`)
         })
         .catch(error => {
+            setError("Ошибка регистрации!")
             console.error('Error:', error);
         });
     };
+
+    const handleLogin = (e) => {
+        window.location.replace(process.env.REACT_APP_BASE_URL)
+    }
   
     return (
         <form className="container" onSubmit={handleSubmit}>
             <AppName/>
             <label htmlFor="login">Логин:</label>
             <input
+                className="input-rp"
                 type="text"
                 id="login"
                 name="login"
@@ -54,6 +53,7 @@ export default function Registration() {
             />
             <label htmlFor="username">Полное имя:</label>
             <input
+                className="input-rp"
                 type="text"
                 id="username"
                 name="username"
@@ -63,6 +63,7 @@ export default function Registration() {
             />
             <label htmlFor="email">Электронная почта:</label>
             <input
+                className="input-rp"
                 type="email"
                 id="email"
                 name="email"
@@ -72,6 +73,7 @@ export default function Registration() {
             />
             <label htmlFor="password">Пароль:</label>
             <input
+                className="input-rp"
                 type="password"
                 id="password"
                 name="password"
@@ -80,6 +82,8 @@ export default function Registration() {
                 onChange={handleChange}
             />
             <button type="submit">Регистрация</button>
+            <button type="button" onClick={handleLogin}>Вход</button>
+            <div style={{color: 'red'}}>{error}</div>
         </form>
     );
   };

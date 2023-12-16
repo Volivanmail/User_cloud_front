@@ -1,26 +1,24 @@
 import React,  {useState, useEffect}  from 'react';
+import axios from 'axios';
 
 export default function FileList() {
     const [files, setFiles] = useState([]);
+    const token = localStorage.getItem('token');
+    console.log(token);
 
     useEffect(() => {
-        fetch('http://127.0.0.1:8000/api/get_files/?id=37')
-            .then(response => {
-                if (response.ok) {
-                    return response.json();
-                }
-                throw new Error('Ошибка запроса');
-            })
-            .then((data) => {
-                setFiles(data);
-            })
-            .catch((error) => {
-                console.error('Error:', error);
-            })
-    }, []);
+        axios.get(`${process.env.REACT_APP_API_URL}get_files/?id=37`, { headers: { Authorization: `Bearer ` + token} })
+        .then(response => {
+            console.log(response.data);
+            setFiles(response.data);
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        })
+    }, [setFiles]);
 
     return (
-    <div className='list-container'>
+    <div className='file-list-container'>
         <h2>Список файлов</h2>
         <table className='table'>
             <thead>

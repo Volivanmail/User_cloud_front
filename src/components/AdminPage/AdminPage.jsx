@@ -13,8 +13,10 @@ export default function UserPage() {
                 <button className="btn btn-files">Мои файлы</button>
                 <button className="btn btn-logout">Выйти</button>
             </div>
-            <UsersList/>
-            <FileList/>
+            <div className="main-box">
+                <UsersList/>
+                <FileList/>
+            </div>
         </section>
     );
 }

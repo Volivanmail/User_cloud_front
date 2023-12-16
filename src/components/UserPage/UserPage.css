@@ -14,7 +14,13 @@ table {
 
 .box-navbar{
     display: flex;
+    margin-bottom: 20px;
+}
 
+section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 
@@ -35,4 +41,8 @@ button{
 
 .btn-logout:hover {
     background: rgb(187, 43, 43);
+}
+
+th {
+    margin: 5px 30px;
 }
