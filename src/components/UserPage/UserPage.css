@@ -1,19 +1,6 @@
-div {
-    display: flex;
-    justify-content: space-around;
-    width: 100vw;
-}
-
-table > caption {
-    font-size: 30pt;
-    font-weight: 600;
-}
-table {
-    margin: 0 auto;
-}
-
 .box-navbar{
     display: flex;
+    align-items: baseline;
     margin-bottom: 20px;
 }
 
@@ -41,8 +28,4 @@ button{
 
 .btn-logout:hover {
     background: rgb(187, 43, 43);
-}
-
-th {
-    margin: 5px 30px;
 }

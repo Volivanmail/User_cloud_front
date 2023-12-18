@@ -6,6 +6,7 @@ import axios from "axios";
 
 
 export default function Login() {
+
     const [formData, setFormData] = useState({
         login: '',
         password: ''
@@ -22,10 +23,15 @@ export default function Login() {
         e.preventDefault();
         axios.post(`${process.env.REACT_APP_API_URL}login/`, formData)
         .then(response => {
-            console.log('Успешная регистрация:', response.data);
             localStorage.setItem('token', response.data.data['token']);
-            console.log(localStorage.getItem('token'));
-            window.location.assign(`${process.env.REACT_APP_BASE_URL}user/`);
+            localStorage.setItem('id', response.data.data['id']);
+            localStorage.setItem('admin', response.data.data['is_admin']);
+            const user_admin = localStorage.getItem('admin');
+            if (user_admin === 'true') {
+                window.location.replace(`${process.env.REACT_APP_BASE_URL}admin/`);
+            } else {
+                window.location.replace(`${process.env.REACT_APP_BASE_URL}user/`);
+            }
         })
         .catch(error => {
             setError("Ошибка авторизации!")
@@ -39,28 +45,30 @@ export default function Login() {
     };
   
     return (
-        <form className="container_login" onSubmit={handleSubmit}>
-            <AppName/>
-            <input
-                type="text"
-                id="login"
-                name="login"
-                value={formData.login}
-                placeholder="Логин:"
-                onChange={handleChange}
-            />
-            <input
-                type="password"
-                id="password"
-                name="password"
-                value={formData.password}
-                placeholder="Пароль:"
-                onChange={handleChange}
-            />
-            <button type="submit">Войти</button>
-            <button onClick={handleRegistration}>Регистрация</button>
-            <h5>Зарегистрируйтесь если у вас еще нет аккаунта!</h5>
-            <div style={{color: 'red'}}>{error}</div>
-        </form>
+        <div className="container">
+            <form className="container_login" onSubmit={handleSubmit}>
+                <AppName/>
+                <input
+                    type="text"
+                    id="login"
+                    name="login"
+                    value={formData.login}
+                    placeholder="Логин:"
+                    onChange={handleChange}
+                />
+                <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    value={formData.password}
+                    placeholder="Пароль:"
+                    onChange={handleChange}
+                />
+                <button type="submit">Войти</button>
+                <button onClick={handleRegistration}>Регистрация</button>
+                <h5>Зарегистрируйтесь если у вас еще нет аккаунта!</h5>
+                <div style={{color: 'red'}}>{error}</div>
+            </form>
+        </div>
     );
 };

@@ -1,42 +1,76 @@
 import React,  {useState, useEffect}  from 'react';
 import "./UsersList.css"
+import axios from 'axios';
+import { FaTrash } from 'react-icons/fa';
+
 
 export default function UsersList() {
     const [users, setUsers] = useState([]);
 
     useEffect(() => {
-        fetch('http://127.0.0.1:8000/api/admin/get_users/')
-            .then(response => {
-                if (response.ok) {
-                    return response.json();
-                }
-                throw new Error('Ошибка запроса');
-            })
-            .then((data) => {
-                setUsers(data);
-            })
-            .catch((error) => {
-                console.error('Error:', error);
-            })
+        const token = localStorage.getItem('token');
+        if (!token) {
+            console.log('Токен отсутствует');
+            return;
+        }
+        const config = {
+            headers: {
+                'Authorization': `Token ${token}`
+            }
+        };
+        axios.get(`${process.env.REACT_APP_API_URL}admin/get_users/`, config)
+        .then(response => {
+            setUsers(response.data.data['users']);
+            console.log(response.data.data['users']);
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        })
     }, [setUsers]);
 
+    const handleUserFiles = () => {
+
+    }
+
+    const handleChangeAdmin = () => {
+
+    }
+
+    const handleDeleteUser = (e) => {
+        e.preventDefault();
+
+        // const user_id = 
+    }
+
+
+
     return (
-    <div className='list-user-container'>
-        <h2>Список пользователей</h2>
+    <div className='list-container'>
         <table className='table'>
+        <caption>Список пользователей</caption>
             <thead>
                 <tr>
+                    <th>id</th>
                     <th>Login</th>
                     <th>User name</th>
                     <th>Email</th>
+                    <th>Админ</th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
                 {users.map((user)=>{
-                    <tr key={user.id}>
+                    return <tr key={user.id}>
+                        <td>{user.id}</td>
                         <td>{user.login}</td>
                         <td>{user.username}</td>
                         <td>{user.email}</td>
+                        <td>{user.is_admin ? 'Да' : 'Нет'}</td>
+                        <td>
+                            <button onClick={handleUserFiles}>Список файлов</button>
+                            <button onClick={handleChangeAdmin}>сменить права админа</button>
+                            <button className='btn-icon' onClick={handleDeleteUser}><FaTrash /></button>
+                        </td>
                     </tr>
                 })}
             </tbody>

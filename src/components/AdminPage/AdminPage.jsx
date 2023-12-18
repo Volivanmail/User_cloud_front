@@ -1,21 +1,32 @@
-import React from "react";
+import React, { useState } from "react";
 import "./AdminPage.css";
 import AppName from "../AppName";
 import FileList from "../FileList/FileList";
 import UsersList from "../UsersList/UsersList";
+import Logout from "../Logout";
+import FileUpload from "../FileUpload";
+
+
+
 
 export default function UserPage() {
+
+    const[isVisible, setIsVisible] = useState(true);
+
+
     return (
         <section>
             <AppName/>
             <div className="box-navbar">
-                <button className="btn btn-download">Загрузить файл</button>
-                <button className="btn btn-files">Мои файлы</button>
-                <button className="btn btn-logout">Выйти</button>
+                <button className="btn" onClick={() =>setIsVisible(false)}>Список пользователей</button>
+                <button className="btn" onClick={() =>setIsVisible(true)}>Мои файлы</button>
+                <Logout/>
+            </div>
+            <div>
+                {isVisible && <FileUpload/>}
             </div>
             <div className="main-box">
-                <UsersList/>
-                <FileList/>
+                {isVisible ? <FileList/> : <UsersList/>}
             </div>
         </section>
     );
