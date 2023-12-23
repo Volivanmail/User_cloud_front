@@ -14,17 +14,6 @@ export default function UsersList() {
     };
 
     useEffect(() => {
-        const token = localStorage.getItem('token');
-        if (!token) {
-            console.log('Токен отсутствует');
-            return;
-        }
-        const config = {
-            headers: {
-                'Authorization': `Token ${token}`,
-                // 'Content-Type': 'application/json'
-            }
-        };
         axios.get(`${process.env.REACT_APP_API_URL}admin/get_users/`, config)
         .then(response => {
             setUsers(response.data.data['users']);
@@ -33,7 +22,7 @@ export default function UsersList() {
         .catch((error) => {
             console.error('Error:', error);
         })
-    }, [setUsers]);
+    });
 
     const handleUserFiles = () => {
 
@@ -43,11 +32,17 @@ export default function UsersList() {
         const formData = new FormData();
         formData.append('id', user.id);
         console.log(user);
-        const is_admin = users.id;
+        const is_admin = user.is_admin;
         console.log(is_admin);
         axios.put(`${process.env.REACT_APP_API_URL}admin/edit_user/`, formData, config)
         .then( response => {
-            setUsers(users[id]['is_admin']=!is_admin);
+            setUsers(users.forEach((item) => {
+                console.log(item);
+                if (item.id === user.id) {
+                    item['is_admin'] = !is_admin;
+                };
+            }));
+            // setUsers(users);
         })
         .catch((error) => {
             console.error('Error:', error);

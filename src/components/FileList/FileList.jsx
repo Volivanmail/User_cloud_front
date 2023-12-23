@@ -24,6 +24,7 @@ export default function FileList() {
         axios.get(`${process.env.REACT_APP_API_URL}get_files/?id=${user_id}`, config)
         .then(response => {
             setFiles(response.data.data['files']);
+            console.log(response.data.data['files']);
         })
         .catch((error) => {
             console.error('Error:', error);
