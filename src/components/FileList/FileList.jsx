@@ -1,24 +1,26 @@
 import React,  {useState, useEffect}  from 'react';
 import axios from 'axios';
 import './FileList.css';
-import { FaDownload, FaTrash } from 'react-icons/fa';
+import Popup from '../Popup/Popup';
+import { FaDownload, FaTrash, FaLink} from 'react-icons/fa';
 
 export default function FileList() {
     const [files, setFiles] = useState([]);
 
+    const [fileUrl, setFileUrl] = useState('');
+
+    const config = {
+        headers: {
+            'Authorization': `Token ${localStorage.getItem('token')}`
+        }
+    };
 
     useEffect(() => {
-        const token = localStorage.getItem('token');
         const user_id = localStorage.getItem('id');
+        const token = localStorage.getItem('token');
         if (!token) {
-            console.log('Токен отсутствует');
-            return;
+            window.location.replace(`${process.env.REACT_APP_BASE_URL}`);
         }
-        const config = {
-            headers: {
-                'Authorization': `Token ${token}`
-            }
-        };
         axios.get(`${process.env.REACT_APP_API_URL}get_files/?id=${user_id}`, config)
         .then(response => {
             setFiles(response.data.data['files']);
@@ -28,17 +30,38 @@ export default function FileList() {
         })
     }, [setFiles]);
 
-    const handleDownload = () => {
-        console.log(1);
-    }
+    const handleDownload = (id) => {
 
-    const handleLink = () => {
-        console.log(2);
-    }
+        axios.get(`${process.env.REACT_APP_API_URL}download_file/?file_id=${id}`, { data: { file_id: id}}, config)
+        .then(response => {
+            console.log(response);
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        })
+    };
 
-    const handleDeleteFile = () => {
+    const handleLink = (id) => {
+        axios.get(`${process.env.REACT_APP_API_URL}creating_link_to_the_file/?file_id=${id}`, config)
+        .then(response => {
+            const url = `${process.env.REACT_APP_API_URL}public/download_file_from_link/?link=${response.data.data['link']}`;
+            setFileUrl(url)
+        })
+        .catch((error) => {
+            console.log('Error:', error);
+        });
+    };
 
-    }
+    const handleDeleteFile = (id) => {
+        axios.delete(`${process.env.REACT_APP_API_URL}delete_file/?id=${id}`, config)
+        .then( response => {
+            console.log(files);
+            setFiles(files.filter(file => {return file.id !== id;}));
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        })
+    };
 
 
     return (
@@ -64,13 +87,20 @@ export default function FileList() {
                         <td>{file.date_upload}</td>
                         <td>{file.date_download}</td>
                         <td>
-                            <button className="btn-icon" onClick={handleDownload}><FaDownload /></button>
-                            <button onClick={handleLink}>Ссылка на скачивание</button>
-                            <button className="btn-icon"onClick={handleDeleteFile}><FaTrash/></button>
+                            <button type="button" className="btn-icon" onClick={() => handleDownload(file.id)}><FaDownload /></button>
+                            <button type="button" className="btn-icon" onClick={() => handleLink(file.id)}><FaLink/></button>
+                            <button type="button" className="btn-icon" onClick={() => handleDeleteFile(file.id)}><FaTrash/></button>
                         </td>
                     </tr>
                 })}
             </tbody>
+            <div className='link-box'>
+                {fileUrl && (
+                    <Popup onClose={() => setFileUrl('')}>
+                        <div className='link-box'>{fileUrl}</div>
+                    </Popup>
+                )}
+            </div>
         </table>
     </div>
     );

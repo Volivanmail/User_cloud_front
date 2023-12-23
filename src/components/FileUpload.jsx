@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import axios from "axios";
+import Popup from "./Popup/Popup";
 
 export default function FileUpload() {
     const [file, setFile] = useState(null);
     const [description, setDescription] = useState('');
     const [blob, setBlob] = useState(null);
+    const [showPopup, setShowPopup] = useState(false);
 
     const handleFileChange = (e) => {
         setFile(e.target.files[0]);
@@ -54,6 +56,7 @@ export default function FileUpload() {
         catch (error) {
             console.error('ошибка при отправке', error);
         }
+        setShowPopup(false);
     }
 
     // const [selectedFile, setSelectedFile] = useState(null);
@@ -98,9 +101,14 @@ export default function FileUpload() {
 
     return (
         <form>
-            <input type="file" onChange={handleFileChange}/>
-            <input type="text" placeholder="Добавьте описание файла" value={description} onChange={handleDescritionChange} />
-            <button type='submit' className="btn btn-download" onClick={handleUpload}>Загрузить файл</button>
+            <button type='button' className="btn btn-download" onClick={() => setShowPopup(true)}>Загрузить файл</button>
+            { showPopup && (
+                <Popup>
+                    <input type="file" onChange={handleFileChange}/>
+                    <input type="text" placeholder="Добавьте описание файла" value={description} onChange={handleDescritionChange} />
+                    <button type='submit' className="btn btn-download" onClick={handleUpload}>Отправить файл</button>
+                </Popup>
+            )}
         </form>
     )
 }

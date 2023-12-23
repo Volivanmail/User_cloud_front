@@ -11,7 +11,8 @@ export default function Login() {
         login: '',
         password: ''
     });
-    const [error, setError] = useState('')
+
+    const [error, setError] = useState('');
   
     const handleChange = (e) => {
         setError('')
@@ -22,21 +23,22 @@ export default function Login() {
     const handleSubmit = (e) => {
         e.preventDefault();
         axios.post(`${process.env.REACT_APP_API_URL}login/`, formData)
-        .then(response => {
-            localStorage.setItem('token', response.data.data['token']);
-            localStorage.setItem('id', response.data.data['id']);
-            localStorage.setItem('admin', response.data.data['is_admin']);
-            const user_admin = localStorage.getItem('admin');
-            if (user_admin === 'true') {
-                window.location.replace(`${process.env.REACT_APP_BASE_URL}admin/`);
-            } else {
-                window.location.replace(`${process.env.REACT_APP_BASE_URL}user/`);
-            }
-        })
-        .catch(error => {
-            setError("Ошибка авторизации!")
-            console.error('Ошибка авторизации:', error.message);
-        });
+            .then(response => {
+                const user = response.data.data
+                localStorage.setItem('token', user['token']);
+                localStorage.setItem('login', user['login']);
+                localStorage.setItem('id', user['id']);
+                localStorage.setItem('admin', user['is_admin']);
+                if (user['is_admin'] === true) {
+                    window.location.replace(`${process.env.REACT_APP_BASE_URL}admin/`);
+                } else {
+                    window.location.replace(`${process.env.REACT_APP_BASE_URL}user/`);
+                }
+            })
+            .catch(error => {
+                setError("Ошибка авторизации!")
+                console.error('Ошибка авторизации:', error.message);
+            });
     };
 
 

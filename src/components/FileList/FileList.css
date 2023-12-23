@@ -43,3 +43,7 @@ background-color: #f2f2f2;
 .btn-icon:hover {
     background: #116c0e;
 }
+
+.link-box {
+width: auto;
+}

@@ -7,6 +7,12 @@ import { FaTrash } from 'react-icons/fa';
 export default function UsersList() {
     const [users, setUsers] = useState([]);
 
+    const config = {
+        headers: {
+            'Authorization': `Token ${localStorage.getItem('token')}`
+        }
+    };
+
     useEffect(() => {
         const token = localStorage.getItem('token');
         if (!token) {
@@ -15,7 +21,8 @@ export default function UsersList() {
         }
         const config = {
             headers: {
-                'Authorization': `Token ${token}`
+                'Authorization': `Token ${token}`,
+                // 'Content-Type': 'application/json'
             }
         };
         axios.get(`${process.env.REACT_APP_API_URL}admin/get_users/`, config)
@@ -32,14 +39,30 @@ export default function UsersList() {
 
     }
 
-    const handleChangeAdmin = () => {
-
+    const handleChangeAdmin = (user) => {
+        const formData = new FormData();
+        formData.append('id', user.id);
+        console.log(user);
+        const is_admin = users.id;
+        console.log(is_admin);
+        axios.put(`${process.env.REACT_APP_API_URL}admin/edit_user/`, formData, config)
+        .then( response => {
+            setUsers(users[id]['is_admin']=!is_admin);
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        })
     }
 
-    const handleDeleteUser = (e) => {
-        e.preventDefault();
-
-        // const user_id = 
+    const handleDeleteUser = (id) => {
+        axios.delete(`${process.env.REACT_APP_API_URL}admin/delete_user/?id=${id}`, config)
+        .then( response => {
+            console.log(users);
+            setUsers(users.filter(user => {return user.id !== id;}));
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        })
     }
 
 
@@ -67,9 +90,9 @@ export default function UsersList() {
                         <td>{user.email}</td>
                         <td>{user.is_admin ? 'Да' : 'Нет'}</td>
                         <td>
-                            <button onClick={handleUserFiles}>Список файлов</button>
-                            <button onClick={handleChangeAdmin}>сменить права админа</button>
-                            <button className='btn-icon' onClick={handleDeleteUser}><FaTrash /></button>
+                            <button type="button" onClick={() => handleUserFiles(user.id)}>Список файлов</button>
+                            <button type="button" onClick={() => handleChangeAdmin(user)}>сменить права админа</button>
+                            <button type="button" className='btn-icon' onClick={() => handleDeleteUser(user.id)}><FaTrash /></button>
                         </td>
                     </tr>
                 })}
