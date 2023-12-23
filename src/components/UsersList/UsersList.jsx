@@ -31,18 +31,14 @@ export default function UsersList() {
     const handleChangeAdmin = (user) => {
         const formData = new FormData();
         formData.append('id', user.id);
-        console.log(user);
         const is_admin = user.is_admin;
-        console.log(is_admin);
         axios.put(`${process.env.REACT_APP_API_URL}admin/edit_user/`, formData, config)
         .then( response => {
             setUsers(users.forEach((item) => {
-                console.log(item);
                 if (item.id === user.id) {
                     item['is_admin'] = !is_admin;
                 };
             }));
-            // setUsers(users);
         })
         .catch((error) => {
             console.error('Error:', error);

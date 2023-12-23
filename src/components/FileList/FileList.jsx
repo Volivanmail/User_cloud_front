@@ -29,7 +29,7 @@ export default function FileList() {
         .catch((error) => {
             console.error('Error:', error);
         })
-    }, [setFiles]);
+    });
 
     const handleDownload = (id) => {
 
