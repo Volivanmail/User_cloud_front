@@ -18,6 +18,11 @@ export default function FileList() {
     useEffect(() => {
         const user_id = localStorage.getItem('id');
         const token = localStorage.getItem('token');
+        const config = {
+            headers: {
+                'Authorization': `Token ${localStorage.getItem('token')}`
+            }
+        };
         if (!token) {
             window.location.replace(`${process.env.REACT_APP_BASE_URL}`);
         }
@@ -29,7 +34,7 @@ export default function FileList() {
         .catch((error) => {
             console.error('Error:', error);
         })
-    });
+    },[setFiles]);
 
     const handleDownload = (id) => {
 
@@ -64,6 +69,23 @@ export default function FileList() {
         })
     };
 
+    const handleRename = (id, newName) => {
+        const formData = new FormData();
+        formData.append('id', id);
+        formData.append('file_name', newName);
+        axios.put(`${process.env.REACT_APP_API_URL}rename_file/`, formData, config)
+        .then( response => {
+            setFiles(files.map(file => {
+                if (file.id === id) {
+                  return { ...file, file_name: newName };
+                }
+                return file;
+              }));
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        })
+    };
 
     return (
     <div className='list-container'>
@@ -82,7 +104,14 @@ export default function FileList() {
             <tbody>
                 {files.map((file)=>{
                     return <tr key={file.id}>
-                        <td>{file.file_name}</td>
+                        <td>
+                            <input
+                                className="rename-file"
+                                type="text"
+                                value={file.file_name}
+                                onChange={e => handleRename(file.id, e.target.value)}
+                            />                        
+                        </td>
                         <td>{file.description}</td>
                         <td>{file.file_size}</td>
                         <td>{file.date_upload}</td>
@@ -95,14 +124,14 @@ export default function FileList() {
                     </tr>
                 })}
             </tbody>
-            <div className='link-box'>
+        </table>
+        <div className='link-box'>
                 {fileUrl && (
                     <Popup onClose={() => setFileUrl('')}>
                         <div className='link-box'>{fileUrl}</div>
                     </Popup>
                 )}
             </div>
-        </table>
     </div>
     );
 };

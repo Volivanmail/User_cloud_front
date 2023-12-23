@@ -14,6 +14,11 @@ export default function UsersList() {
     };
 
     useEffect(() => {
+        const config = {
+            headers: {
+                'Authorization': `Token ${localStorage.getItem('token')}`
+            }
+        };
         axios.get(`${process.env.REACT_APP_API_URL}admin/get_users/`, config)
         .then(response => {
             setUsers(response.data.data['users']);
@@ -22,7 +27,7 @@ export default function UsersList() {
         .catch((error) => {
             console.error('Error:', error);
         })
-    });
+    },[setUsers]);
 
     const handleUserFiles = () => {
 
@@ -31,14 +36,16 @@ export default function UsersList() {
     const handleChangeAdmin = (user) => {
         const formData = new FormData();
         formData.append('id', user.id);
-        const is_admin = user.is_admin;
         axios.put(`${process.env.REACT_APP_API_URL}admin/edit_user/`, formData, config)
         .then( response => {
-            setUsers(users.forEach((item) => {
-                if (item.id === user.id) {
-                    item['is_admin'] = !is_admin;
-                };
-            }));
+            console.log(response.data.data);
+            const new_users = users.map( user => {
+                if (user.login === response.data.data['login']) {
+                    return { ...user, is_admin: response.data.data['is_admin']};
+                }
+                return user;
+            });
+            setUsers(new_users);
         })
         .catch((error) => {
             console.error('Error:', error);
@@ -69,6 +76,8 @@ export default function UsersList() {
                     <th>User name</th>
                     <th>Email</th>
                     <th>Админ</th>
+                    <th>Файлов</th>
+                    <th>Размер файлов кб</th>
                     <th></th>
                 </tr>
             </thead>
@@ -80,6 +89,8 @@ export default function UsersList() {
                         <td>{user.username}</td>
                         <td>{user.email}</td>
                         <td>{user.is_admin ? 'Да' : 'Нет'}</td>
+                        <td>{user.file_count}</td>
+                        <td>{user.total_count}</td>
                         <td>
                             <button type="button" onClick={() => handleUserFiles(user.id)}>Список файлов</button>
                             <button type="button" onClick={() => handleChangeAdmin(user)}>сменить права админа</button>
