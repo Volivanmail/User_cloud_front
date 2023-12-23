@@ -1,12 +1,12 @@
 import React,  {useState, useEffect}  from 'react';
 import axios from 'axios';
-import './FileList.css';
+import './FileListUserForAdmin.css';
 import Popup from '../Popup/Popup';
 import { FaDownload, FaTrash, FaLink} from 'react-icons/fa';
 
-export default function FileList() {
+export default function FileListUserForAdmin() {
     const [files, setFiles] = useState([]);
-    // const [fileUrlDownload, setFileUrlDownload] = useState([]);
+
     const [fileUrl, setFileUrl] = useState('');
 
     const config = {
@@ -36,45 +36,15 @@ export default function FileList() {
         })
     },[setFiles]);
 
-    // const handleDownload = (id) => {
-    //     const config = {headers: {
-    //         'Authorization': `Token ${localStorage.getItem('token')}`,
-    //         'responseType': 'blob'
-    //         }};
-    //     axios.get(`${process.env.REACT_APP_API_URL}download_file/?file_id=${id}`, config)
-    //     .then(response => {
-    //         console.log(response);
-    //         const url = window.URL.createObjectURL(new Blob([response.data]));
-    //         const link = document.createElement('a');
-    //         link.href = url;
-    //         link.setAttribute('download', id);
-    //         document.body.appendChild(link);
-    //         link.click();
-    //     })
-    //     .catch((error) => {
-    //         console.error('Error:', error);
-    //     })
-    // };
+    const handleDownload = (id) => {
 
-    const handleDownload = async(id) => {
-        try {
-            const config = {headers: {
-                        'Authorization': `Token ${localStorage.getItem('token')}`,
-                        'responseType': 'blob'
-                        }};
-            const response = await axios.get(
-                `${process.env.REACT_APP_API_URL}download_file/?file_id=${id}`,
-                config
-            )
-            const url = window.URL.createObjectURL(new Blob([response.data]));
-            const link = document.createElement('a');
-            link.href = url;
-            link.setAttribute('download', id);
-            document.body.appendChild(link);
-            link.click();
-        } catch (error) {
-            console.error('Ошибка загрузки файла:', error);
-        }
+        axios.get(`${process.env.REACT_APP_API_URL}download_file/?file_id=${id}`, { data: { file_id: id}}, config)
+        .then(response => {
+            console.log(response);
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        })
     };
 
     const handleLink = (id) => {
@@ -99,24 +69,6 @@ export default function FileList() {
         })
     };
 
-    const handleRename = (id, newName) => {
-        setFiles(files.map(file => {
-            if (file.id === id) {
-              return { ...file, file_name: newName };
-            }
-            return file;
-          }));
-        const formData = new FormData();
-        formData.append('id', id);
-        formData.append('file_name', newName);
-        axios.put(`${process.env.REACT_APP_API_URL}rename_file/`, formData, config)
-        .then( response => {
-            console.log('newName');
-        })
-        .catch((error) => {
-            console.error('Error:', error);
-        })
-    };
 
     return (
     <div className='list-container'>
@@ -135,24 +87,12 @@ export default function FileList() {
             <tbody>
                 {files.map((file)=>{
                     return <tr key={file.id}>
-                        <td>
-                            <input
-                                className="rename-file"
-                                type="text"
-                                value={file.file_name}
-                                onChange={e => handleRename(file.id, e.target.value)}
-                            />                        
-                        </td>
+                        <td>{file.file_name}</td>
                         <td>{file.description}</td>
                         <td>{file.file_size}</td>
                         <td>{file.date_upload}</td>
                         <td>{file.date_download}</td>
                         <td>
-                            {fileUrl && (
-                                <a href={fileUrl} download>
-                                Нажмите здесь, чтобы скачать файл
-                                </a>
-                            )}
                             <button type="button" className="btn-icon" onClick={() => handleDownload(file.id)}><FaDownload /></button>
                             <button type="button" className="btn-icon" onClick={() => handleLink(file.id)}><FaLink/></button>
                             <button type="button" className="btn-icon" onClick={() => handleDeleteFile(file.id)}><FaTrash/></button>

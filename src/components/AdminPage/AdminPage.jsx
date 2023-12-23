@@ -5,11 +5,12 @@ import FileList from "../FileList/FileList";
 import UsersList from "../UsersList/UsersList";
 import Logout from "../Logout";
 import FileUpload from "../FileUpload";
+// import FileListUserForAdmin from "../FileListUserForAdmin/FileListUserForAdmin";
 
 
 
 
-export default function UserPage() {
+export default function AdminPage() {
 
     const[isVisible, setIsVisible] = useState(true);
 
@@ -28,6 +29,9 @@ export default function UserPage() {
             <div className="main-box">
                 {isVisible ? <FileList/> : <UsersList/>}
             </div>
+            {/* <div>
+                {isVisible && <FileListUserForAdmin/>}
+            </div> */}
         </section>
     );
 }
