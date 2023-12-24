@@ -60,7 +60,7 @@ export default function FileList() {
         try {
             const config = {headers: {
                         'Authorization': `Token ${localStorage.getItem('token')}`,
-                        'responseType': 'blob'
+                        'responseType': 'blob',
                         }};
             const response = await axios.get(
                 `${process.env.REACT_APP_API_URL}download_file/?file_id=${id}`,

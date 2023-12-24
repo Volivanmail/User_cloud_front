@@ -17,47 +17,47 @@ export default function FileUpload() {
         setDescription(e.target.value);
     }
 
-    const handleUpload = async (e) => {
-        e.preventDefault();
-        if (!file) {
-            alert('Выберите файл для загрузки');
-            return;
-        }
+    // const handleUpload = async (e) => {
+    //     e.preventDefault();
+    //     if (!file) {
+    //         alert('Выберите файл для загрузки');
+    //         return;
+    //     }
         
-        const formData = new FormData();
-        formData.append('file', file);
-        formData.append('description', description);
-        if (blob) {
-            formData.append('blob', blob);
-        }
+    //     const formData = new FormData();
+    //     formData.append('file', file);
+    //     formData.append('description', description);
+    //     if (blob) {
+    //         formData.append('blob', blob);
+    //     }
 
-        const token = localStorage.getItem('token');
-        if (!token) {
-            console.log('Токен отсутствует');
-            return;
-        }
-        const config = {
-            headers: {
-                'Authorization': `Token ${token}`,
-                'Content-Type': 'multipart/form-data'
-              }
-        };
+    //     const token = localStorage.getItem('token');
+    //     if (!token) {
+    //         console.log('Токен отсутствует');
+    //         return;
+    //     }
+    //     const config = {
+    //         headers: {
+    //             'Authorization': `Token ${token}`,
+    //             'Content-Type': 'multipart/form-data'
+    //           }
+    //     };
 
-        try {
-            // axios.post(`${process.env.REACT_APP_API_URL}upload/`, formData, config)
-            const response = axios.post(`${process.env.REACT_APP_API_URL}upload/`, formData, config)
-            if (response.ok) {
-                alert('Файл успешно загружен');
-            }
-            else {
-                alert('Ошибка при загрузке');
-            }
-        }
-        catch (error) {
-            console.error('ошибка при отправке', error);
-        }
-        setShowPopup(false);
-    }
+    //     try {
+    //         // axios.post(`${process.env.REACT_APP_API_URL}upload/`, formData, config)
+    //         const response = axios.post(`${process.env.REACT_APP_API_URL}upload/`, formData, config)
+    //         if (response.ok) {
+    //             alert('Файл успешно загружен');
+    //         }
+    //         else {
+    //             alert('Ошибка при загрузке');
+    //         }
+    //     }
+    //     catch (error) {
+    //         console.error('ошибка при отправке', error);
+    //     }
+    //     setShowPopup(false);
+    // }
 
     // const [selectedFile, setSelectedFile] = useState(null);
     // const [description, setDescription] = useState('');
@@ -98,6 +98,41 @@ export default function FileUpload() {
     //     }
     // };
 
+    const handleUpload = async (e) => {
+        e.preventDefault();
+        if (!file) {
+            alert('Выберите файл для загрузки');
+            return;
+        }
+        
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('description', description);
+        if (blob) {
+            formData.append('blob', blob);
+        }
+
+        const config = {
+            headers: {
+                'Authorization': `Token ${localStorage.getItem('token')}`,
+                'Content-Type': 'multipart/form-data'
+              }
+        };
+
+        try {
+            axios.post(`${process.env.REACT_APP_API_URL}upload/`, formData, config)
+            .then(response => {
+                console.log('Файл успешно загружен:', response.data);
+            })
+            .catch(error => {
+                console.error('Ошибка при загрузке файла:', error);
+            });
+        }
+        catch (error) {
+            console.error('ошибка при отправке', error);
+        }
+        setShowPopup(false);
+    }
 
     return (
         <form>
