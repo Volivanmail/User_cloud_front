@@ -4,7 +4,9 @@ import './FileListUserForAdmin.css';
 import Popup from '../Popup/Popup';
 import { FaDownload, FaTrash, FaLink} from 'react-icons/fa';
 
-export default function FileListUserForAdmin() {
+export default function FileListUserForAdmin({userId}) {
+
+    // console.log(userId);
     const [files, setFiles] = useState([]);
 
     const [fileUrl, setFileUrl] = useState('');
@@ -16,7 +18,6 @@ export default function FileListUserForAdmin() {
     };
 
     useEffect(() => {
-        const user_id = localStorage.getItem('id');
         const token = localStorage.getItem('token');
         const config = {
             headers: {
@@ -26,7 +27,7 @@ export default function FileListUserForAdmin() {
         if (!token) {
             window.location.replace(`${process.env.REACT_APP_BASE_URL}`);
         }
-        axios.get(`${process.env.REACT_APP_API_URL}get_files/?id=${user_id}`, config)
+        axios.get(`${process.env.REACT_APP_API_URL}get_files/?id=${userId}`, config)
         .then(response => {
             setFiles(response.data.data['files']);
             console.log(response.data.data['files']);
@@ -34,11 +35,11 @@ export default function FileListUserForAdmin() {
         .catch((error) => {
             console.error('Error:', error);
         })
-    },[setFiles]);
+    },[userId]);
 
     const handleDownload = (id) => {
 
-        axios.get(`${process.env.REACT_APP_API_URL}download_file/?file_id=${id}`, { data: { file_id: id}}, config)
+        axios.get(`${process.env.REACT_APP_API_URL}download_file/?file_id=${id}`, config)
         .then(response => {
             console.log(response);
         })

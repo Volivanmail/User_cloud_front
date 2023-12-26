@@ -2,10 +2,22 @@ import React,  {useState, useEffect}  from 'react';
 import "./UsersList.css"
 import axios from 'axios';
 import { FaTrash } from 'react-icons/fa';
+// import FileListUserForAdmin from '../FileListUserForAdmin/FileListUserForAdmin';
+import AdminPage from '../AdminPage/AdminPage';
+// import AdminPage from '../AdminPage/AdminPage';
 
 
-export default function UsersList() {
+export default function UsersList({hideList}) {
     const [users, setUsers] = useState([]);
+
+    const [selectedUserId, setSelectedUserId] = useState(null); // состояние для хранения id выбранного пользователя
+      
+    const onShowUserFiles = (userId) => {
+        console.log(userId);
+        // handleUserFiles(userId);
+        setSelectedUserId(userId);
+        hideList(userId);
+    }
 
     const config = {
         headers: {
@@ -29,9 +41,10 @@ export default function UsersList() {
         })
     },[setUsers]);
 
-    const handleUserFiles = () => {
 
-    }
+    // const handleUserFiles = (userId) => {
+    //     setSelectedUserId(userId); // обновляем состояние id выбранного пользователя
+    // };
 
     const handleChangeAdmin = (user) => {
         const formData = new FormData();
@@ -92,7 +105,7 @@ export default function UsersList() {
                         <td>{user.file_count}</td>
                         <td>{user.total_count}</td>
                         <td>
-                            <button type="button" onClick={() => handleUserFiles(user.id)}>Список файлов</button>
+                            <button type="button" onClick={() => onShowUserFiles(user.id)}>Список файлов</button>
                             <button type="button" onClick={() => handleChangeAdmin(user)}>сменить права админа</button>
                             <button type="button" className='btn-icon' onClick={() => handleDeleteUser(user.id)}><FaTrash /></button>
                         </td>
@@ -100,6 +113,8 @@ export default function UsersList() {
                 })}
             </tbody>
         </table>
+        {/* {selectedUserId && <FileListUserForAdmin userId={selectedUserId} />} */}
+        {/* {<AdminPage userId={selectedUserId} />} */}
     </div>
     );
 };

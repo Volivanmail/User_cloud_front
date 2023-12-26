@@ -3,6 +3,7 @@ import axios from 'axios';
 import './FileList.css';
 import Popup from '../Popup/Popup';
 import { FaDownload, FaTrash, FaLink} from 'react-icons/fa';
+import { type } from '@testing-library/user-event/dist/type';
 
 export default function FileList() {
     const [files, setFiles] = useState([]);
@@ -56,21 +57,24 @@ export default function FileList() {
     //     })
     // };
 
-    const handleDownload = async(id) => {
+    const handleDownload = async(file) => {
+        console.log(file);
         try {
             const config = {headers: {
-                        'Authorization': `Token ${localStorage.getItem('token')}`,
-                        'responseType': 'blob',
+                        'Authorization': `Token ${localStorage.getItem('token')}`
                         }};
             const response = await axios.get(
-                `${process.env.REACT_APP_API_URL}download_file/?file_id=${id}`,
+                `${process.env.REACT_APP_API_URL}download_file/?file_id=${file.id}`,
                 config
             )
-            const url = window.URL.createObjectURL(new Blob([response.data]));
+            // const url = window.URL.createObjectURL(response.data);
+            // console.log(response.data);
+            const url = URL.createObjectURL(new Blob([response.data], {type: 'application/pdf'}));
             const link = document.createElement('a');
             link.href = url;
-            link.setAttribute('download', id);
-            document.body.appendChild(link);
+            link.download = file.file_name
+            // link.setAttribute('download', id);
+            // document.body.appendChild(link);
             link.click();
         } catch (error) {
             console.error('Ошибка загрузки файла:', error);
@@ -148,12 +152,12 @@ export default function FileList() {
                         <td>{file.date_upload}</td>
                         <td>{file.date_download}</td>
                         <td>
-                            {fileUrl && (
+                            {/* {fileUrl && (
                                 <a href={fileUrl} download>
                                 Нажмите здесь, чтобы скачать файл
                                 </a>
-                            )}
-                            <button type="button" className="btn-icon" onClick={() => handleDownload(file.id)}><FaDownload /></button>
+                            )} */}
+                            <button type="button" className="btn-icon" onClick={() => handleDownload(file)}><FaDownload /></button>
                             <button type="button" className="btn-icon" onClick={() => handleLink(file.id)}><FaLink/></button>
                             <button type="button" className="btn-icon" onClick={() => handleDeleteFile(file.id)}><FaTrash/></button>
                         </td>
