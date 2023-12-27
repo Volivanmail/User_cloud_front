@@ -2,11 +2,10 @@ import React,  {useState, useEffect}  from 'react';
 import axios from 'axios';
 import './FileList.css';
 import Popup from '../Popup/Popup';
-import { FaDownload, FaTrash, FaLink} from 'react-icons/fa';
-import { type } from '@testing-library/user-event/dist/type';
+import { FaDownload, FaTrash, FaLink} from 'react-icons/fa'; 
 
-export default function FileList() {
-    const [files, setFiles] = useState([]);
+export default function FileList({files, handleEdit, handleRename}) {
+    // const [files, setFiles] = useState([]);
     // const [fileUrlDownload, setFileUrlDownload] = useState([]);
     const [fileUrl, setFileUrl] = useState('');
 
@@ -16,26 +15,26 @@ export default function FileList() {
         }
     };
 
-    useEffect(() => {
-        const user_id = localStorage.getItem('id');
-        const token = localStorage.getItem('token');
-        const config = {
-            headers: {
-                'Authorization': `Token ${localStorage.getItem('token')}`
-            }
-        };
-        if (!token) {
-            window.location.replace(`${process.env.REACT_APP_BASE_URL}`);
-        }
-        axios.get(`${process.env.REACT_APP_API_URL}get_files/?id=${user_id}`, config)
-        .then(response => {
-            setFiles(response.data.data['files']);
-            console.log(response.data.data['files']);
-        })
-        .catch((error) => {
-            console.error('Error:', error);
-        })
-    },[setFiles]);
+    // useEffect(() => {
+    //     const user_id = localStorage.getItem('id');
+    //     const token = localStorage.getItem('token');
+    //     const config = {
+    //         headers: {
+    //             'Authorization': `Token ${localStorage.getItem('token')}`
+    //         }
+    //     };
+    //     if (!token) {
+    //         window.location.replace(`${process.env.REACT_APP_BASE_URL}`);
+    //     }
+    //     axios.get(`${process.env.REACT_APP_API_URL}get_files/?id=${user_id}`, config)
+    //     .then(response => {
+    //         setFiles(response.data.data['files']);
+    //         console.log(response.data.data['files']);
+    //     })
+    //     .catch((error) => {
+    //         console.error('Error:', error);
+    //     })
+    // },[setFiles]);
 
     // const handleDownload = (id) => {
     //     const config = {headers: {
@@ -63,18 +62,17 @@ export default function FileList() {
             const config = {headers: {
                         'Authorization': `Token ${localStorage.getItem('token')}`
                         }};
-            const response = await axios.get(
-                `${process.env.REACT_APP_API_URL}download_file/?file_id=${file.id}`,
-                config
-            )
-            // const url = window.URL.createObjectURL(response.data);
-            // console.log(response.data);
-            const url = URL.createObjectURL(new Blob([response.data], {type: 'application/pdf'}));
+
+            const response = await fetch(`${process.env.REACT_APP_API_URL}download_file/?file_id=${file.id}`,
+            config)
+            let ext = file.file_name.split(".");
+            ext = ext[ext.length - 1];
+            console.log(ext);
+            const blob = await response.blob();
+            const url = URL.createObjectURL(blob);
             const link = document.createElement('a');
             link.href = url;
             link.download = file.file_name
-            // link.setAttribute('download', id);
-            // document.body.appendChild(link);
             link.click();
         } catch (error) {
             console.error('Ошибка загрузки файла:', error);
@@ -96,20 +94,23 @@ export default function FileList() {
         axios.delete(`${process.env.REACT_APP_API_URL}delete_file/?id=${id}`, config)
         .then( response => {
             console.log(files);
-            setFiles(files.filter(file => {return file.id !== id;}));
+            handleEdit(id);
+            // setFiles(files.filter(file => {return file.id !== id;}));
         })
         .catch((error) => {
             console.error('Error:', error);
         })
     };
 
-    const handleRename = (id, newName) => {
-        setFiles(files.map(file => {
-            if (file.id === id) {
-              return { ...file, file_name: newName };
-            }
-            return file;
-          }));
+    const handleChangeName = (id, newName) => {
+        // setFiles(files.map(file => {
+        //     if (file.id === id) {
+        //       return { ...file, file_name: newName };
+        //     }
+        //     return file;
+        //   }));
+
+        handleRename(id, newName)
         const formData = new FormData();
         formData.append('id', id);
         formData.append('file_name', newName);
@@ -144,7 +145,7 @@ export default function FileList() {
                                 className="rename-file"
                                 type="text"
                                 value={file.file_name}
-                                onChange={e => handleRename(file.id, e.target.value)}
+                                onChange={e => handleChangeName(file.id, e.target.value)}
                             />                        
                         </td>
                         <td>{file.description}</td>
@@ -156,7 +157,7 @@ export default function FileList() {
                                 <a href={fileUrl} download>
                                 Нажмите здесь, чтобы скачать файл
                                 </a>
-                            )} */}
+                            )} */} 
                             <button type="button" className="btn-icon" onClick={() => handleDownload(file)}><FaDownload /></button>
                             <button type="button" className="btn-icon" onClick={() => handleLink(file.id)}><FaLink/></button>
                             <button type="button" className="btn-icon" onClick={() => handleDeleteFile(file.id)}><FaTrash/></button>

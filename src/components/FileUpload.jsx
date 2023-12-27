@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import Popup from "./Popup/Popup";
 
-export default function FileUpload() {
+export default function FileUpload({refetch}) {
     const [file, setFile] = useState(null);
     const [description, setDescription] = useState('');
     const [showPopup, setShowPopup] = useState(false);
@@ -34,16 +34,19 @@ export default function FileUpload() {
         try {
             axios.post(`${process.env.REACT_APP_API_URL}upload_file/`, formData, config)
             .then(response => {
-                
+                refetch();
                 console.log('Файл успешно загружен:', response.data);
             })
             .catch(error => {
                 console.error('Ошибка при загрузке файла:', error);
             });
+
         }
         catch (error) {
             console.error('ошибка при отправке', error);
         }
+
+        // refetch();
         setShowPopup(false);
     }
 

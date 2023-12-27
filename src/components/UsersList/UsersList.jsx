@@ -13,8 +13,6 @@ export default function UsersList({hideList}) {
     const [selectedUserId, setSelectedUserId] = useState(null); // состояние для хранения id выбранного пользователя
       
     const onShowUserFiles = (userId) => {
-        console.log(userId);
-        // handleUserFiles(userId);
         setSelectedUserId(userId);
         hideList(userId);
     }
@@ -41,10 +39,6 @@ export default function UsersList({hideList}) {
         })
     },[setUsers]);
 
-
-    // const handleUserFiles = (userId) => {
-    //     setSelectedUserId(userId); // обновляем состояние id выбранного пользователя
-    // };
 
     const handleChangeAdmin = (user) => {
         const formData = new FormData();
@@ -113,8 +107,6 @@ export default function UsersList({hideList}) {
                 })}
             </tbody>
         </table>
-        {/* {selectedUserId && <FileListUserForAdmin userId={selectedUserId} />} */}
-        {/* {<AdminPage userId={selectedUserId} />} */}
     </div>
     );
 };
