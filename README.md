@@ -2,7 +2,11 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-## Available Scripts
+## В файле .env закоментировать или раскоментировать:
+
+REACT_APP_API_URL = http://127.0.0.1:8000/api/ - для локальной разработки
+REACT_APP_API_URL = http://95.163.231.203:8000/api/ - для работы с удаленным сервером
+
 
 In the project directory, you can run:
 
