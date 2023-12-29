@@ -11,10 +11,7 @@ import axios from 'axios';
 
 
 export default function AdminPage() {
-    // console.log(userId);
 
-
-    // const [isVisible, setIsVisible] = useState(true);
     const [showFileList, setShowFileList] = useState(true);
     const [showUserList, setShowUserList] = useState(false);
     const [selectedUserId, setSelectedUserId] = useState(null);
@@ -23,14 +20,12 @@ export default function AdminPage() {
         setSelectedUserId(userId);
         setShowFileList(false);
         setShowUserList(false);
-        // setIsVisible(true);
     }
 
     const onShowUserList = () => {
         setSelectedUserId(null);
         setShowFileList(false);
         setShowUserList(true);
-        // setIsVisible(false);
     }
 
     const showMyFiles = () => {
@@ -39,7 +34,6 @@ export default function AdminPage() {
         setSelectedUserId(null);
     }
 
-    
     const [files, setFiles] = useState([]); 
 
     function refetch() {

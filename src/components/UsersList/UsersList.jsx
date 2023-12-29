@@ -3,7 +3,7 @@ import "./UsersList.css"
 import axios from 'axios';
 import { FaTrash } from 'react-icons/fa';
 // import FileListUserForAdmin from '../FileListUserForAdmin/FileListUserForAdmin';
-import AdminPage from '../AdminPage/AdminPage';
+// import AdminPage from '../AdminPage/AdminPage';
 // import AdminPage from '../AdminPage/AdminPage';
 
 

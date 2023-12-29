@@ -1,60 +1,17 @@
-import React,  {useState, useEffect}  from 'react';
+import React,  { useState }  from 'react';
 import axios from 'axios';
 import './FileList.css';
 import Popup from '../Popup/Popup';
 import { FaDownload, FaTrash, FaLink} from 'react-icons/fa'; 
 
 export default function FileList({files, handleEdit, handleRename}) {
-    // const [files, setFiles] = useState([]);
-    // const [fileUrlDownload, setFileUrlDownload] = useState([]);
     const [fileUrl, setFileUrl] = useState('');
-
     const config = {
         headers: {
             'Authorization': `Token ${localStorage.getItem('token')}`
         }
     };
 
-    // useEffect(() => {
-    //     const user_id = localStorage.getItem('id');
-    //     const token = localStorage.getItem('token');
-    //     const config = {
-    //         headers: {
-    //             'Authorization': `Token ${localStorage.getItem('token')}`
-    //         }
-    //     };
-    //     if (!token) {
-    //         window.location.replace(`${process.env.REACT_APP_BASE_URL}`);
-    //     }
-    //     axios.get(`${process.env.REACT_APP_API_URL}get_files/?id=${user_id}`, config)
-    //     .then(response => {
-    //         setFiles(response.data.data['files']);
-    //         console.log(response.data.data['files']);
-    //     })
-    //     .catch((error) => {
-    //         console.error('Error:', error);
-    //     })
-    // },[setFiles]);
-
-    // const handleDownload = (id) => {
-    //     const config = {headers: {
-    //         'Authorization': `Token ${localStorage.getItem('token')}`,
-    //         'responseType': 'blob'
-    //         }};
-    //     axios.get(`${process.env.REACT_APP_API_URL}download_file/?file_id=${id}`, config)
-    //     .then(response => {
-    //         console.log(response);
-    //         const url = window.URL.createObjectURL(new Blob([response.data]));
-    //         const link = document.createElement('a');
-    //         link.href = url;
-    //         link.setAttribute('download', id);
-    //         document.body.appendChild(link);
-    //         link.click();
-    //     })
-    //     .catch((error) => {
-    //         console.error('Error:', error);
-    //     })
-    // };
 
     const handleDownload = async(file) => {
         console.log(file);
@@ -62,12 +19,8 @@ export default function FileList({files, handleEdit, handleRename}) {
             const config = {headers: {
                         'Authorization': `Token ${localStorage.getItem('token')}`
                         }};
-
             const response = await fetch(`${process.env.REACT_APP_API_URL}download_file/?file_id=${file.id}`,
             config)
-            let ext = file.file_name.split(".");
-            ext = ext[ext.length - 1];
-            console.log(ext);
             const blob = await response.blob();
             const url = URL.createObjectURL(blob);
             const link = document.createElement('a');
@@ -78,6 +31,7 @@ export default function FileList({files, handleEdit, handleRename}) {
             console.error('Ошибка загрузки файла:', error);
         }
     };
+
 
     const handleLink = (id) => {
         axios.get(`${process.env.REACT_APP_API_URL}creating_link_to_the_file/?file_id=${id}`, config)
@@ -90,12 +44,12 @@ export default function FileList({files, handleEdit, handleRename}) {
         });
     };
 
+
     const handleDeleteFile = (id) => {
         axios.delete(`${process.env.REACT_APP_API_URL}delete_file/?id=${id}`, config)
         .then( response => {
             console.log(files);
             handleEdit(id);
-            // setFiles(files.filter(file => {return file.id !== id;}));
         })
         .catch((error) => {
             console.error('Error:', error);
@@ -103,13 +57,6 @@ export default function FileList({files, handleEdit, handleRename}) {
     };
 
     const handleChangeName = (id, newName) => {
-        // setFiles(files.map(file => {
-        //     if (file.id === id) {
-        //       return { ...file, file_name: newName };
-        //     }
-        //     return file;
-        //   }));
-
         handleRename(id, newName)
         const formData = new FormData();
         formData.append('id', id);
@@ -153,11 +100,6 @@ export default function FileList({files, handleEdit, handleRename}) {
                         <td>{file.date_upload}</td>
                         <td>{file.date_download}</td>
                         <td>
-                            {/* {fileUrl && (
-                                <a href={fileUrl} download>
-                                Нажмите здесь, чтобы скачать файл
-                                </a>
-                            )} */} 
                             <button type="button" className="btn-icon" onClick={() => handleDownload(file)}><FaDownload /></button>
                             <button type="button" className="btn-icon" onClick={() => handleLink(file.id)}><FaLink/></button>
                             <button type="button" className="btn-icon" onClick={() => handleDeleteFile(file.id)}><FaTrash/></button>

@@ -6,7 +6,6 @@ import { FaDownload, FaTrash, FaLink} from 'react-icons/fa';
 
 export default function FileListUserForAdmin({userId}) {
 
-    // console.log(userId);
     const [files, setFiles] = useState([]);
 
     const [fileUrl, setFileUrl] = useState('');
