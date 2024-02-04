@@ -36,15 +36,34 @@ export default function FileListUserForAdmin({userId}) {
         })
     },[userId]);
 
-    const handleDownload = (id) => {
+    // const handleDownload = (id) => {
 
-        axios.get(`${process.env.REACT_APP_API_URL}download_file/?file_id=${id}`, config)
-        .then(response => {
-            console.log(response);
-        })
-        .catch((error) => {
-            console.error('Error:', error);
-        })
+    //     axios.get(`${process.env.REACT_APP_API_URL}download_file/?file_id=${id}`, config)
+    //     .then(response => {
+    //         console.log(response);
+    //     })
+    //     .catch((error) => {
+    //         console.error('Error:', error);
+    //     })
+    // };
+
+    const handleDownload = async(file) => {
+        console.log(file);
+        try {
+            const config = {headers: {
+                        'Authorization': `Token ${localStorage.getItem('token')}`
+                        }};
+            const response = await fetch(`${process.env.REACT_APP_API_URL}download_file/?file_id=${file.id}`,
+            config)
+            const blob = await response.blob();
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = file.file_name
+            link.click();
+        } catch (error) {
+            console.error('Ошибка загрузки файла:', error);
+        }
     };
 
     const handleLink = (id) => {
@@ -93,7 +112,7 @@ export default function FileListUserForAdmin({userId}) {
                         <td>{file.date_upload}</td>
                         <td>{file.date_download}</td>
                         <td>
-                            <button type="button" className="btn-icon" onClick={() => handleDownload(file.id)}><FaDownload /></button>
+                            <button type="button" className="btn-icon" onClick={() => handleDownload(file)}><FaDownload /></button>
                             <button type="button" className="btn-icon" onClick={() => handleLink(file.id)}><FaLink/></button>
                             <button type="button" className="btn-icon" onClick={() => handleDeleteFile(file.id)}><FaTrash/></button>
                         </td>
